@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.1/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <!-- Header -->
+    <nav class= "bg-black bg-opacity-50 backdrop-blur-sm shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+            <div class="relative flex items-center justify-between h-16">
+                <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
+                    <!-- Mobile menu button-->
+                    <button id="mobile-menu-button"
+                        class="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-gray-300 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16m-7 6h7" />
+                        </svg>
+                        <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-between">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-2xl text-white font-bold">Eco-Responsable</h1>
+                    </div>
+                    <div class="hidden sm:block sm:ml-6 mr-10">
+                        <div class="flex space-x-4">
+                            <a href="#"
+                                class="text-white hover:bg-green-300 hover:text-white px-3 py-2 rounded-md text-lg font-medium">Accueil</a>
+                            <a href="#"
+                                class="text-white hover:bg-green-300 hover:text-white px-3 py-2 rounded-md text-lg font-medium">Astuces</a>
+                            <a href="#"
+                                class="text-white hover:bg-green-300 hover:text-white px-3 py-2 rounded-md text-lg font-medium">Articles</a>
+                            <a href="#"
+                                class="text-white hover:bg-green-300 hover:text-white px-3 py-2 rounded-md text-lg font-medium">Contact</a>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile menu, show/hide based on menu state. -->
+        <div id="mobile-menu" class="hidden sm:hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="http://localhost/eco-responsable/public/frontend/"
+                    class="text-white hover:bg-blue-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Accueil</a>
+                <a href="#"
+                    class="text-white hover:bg-blue-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Universités</a>
+                <a href="#"
+                    class="text-white hover:bg-blue-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Formations</a>
+                <a href="#"
+                    class="text-white hover:bg-blue-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- Dashboard Content -->
+    <section class="container mx-auto px-6 py-20">
+        <h2 class="text-4xl font-bold text-center mb-8">Mon tableau de bord</h2>
+        <div id="user-info" class="max-w-3xl mx-auto bg-green-200 p-6 rounded-lg shadow-lg">
+            <h3 class="text-2xl font-semibold mb-4">Mes informations</h3>
+            <div class="text-lg">
+                <p><strong>Pseudo : </strong> <span id="username"></span></p>
+                <p><strong>Commune : </strong> <span id="commune"></span></p>
+                <p><strong>Nombre bouteilles pleines collectées : </strong> <span id="GoodBottlesCollected"></span></p>
+                <p><strong>Nombre bouteilles froissées collectées : </strong> <span id="BadBottlesCollected"></span></p>
+                <p><strong>Score : </strong> <span id="score"></span></p>
+                <p><strong>Gain courant : </strong> <span id="profit"></span> CDF</p>
+                <p><strong>Gain retiré : </strong> <span id="withdrawal"></span> CDF</p>
+                <p><strong>Gain cumulé : </strong> <span id="accumulation"></span> CDF</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-r from-green-500 to-green-800 text-white p-8" data-aos="fade-up">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
+            <!-- Social Links -->
+            <div class="flex flex-col">
+                <h2 class="font-bold text-lg mb-4">Suivez-nous</h2>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-white"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-white"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-white"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="text-white"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+
+            <!-- Additional Links or Text -->
+            <div>
+                <h2 class="font-bold text-lg mb-4">Ressources</h2>
+                <ul>
+                    <li><a href="#" class="hover:text-gray-200">FAQ</a></li>
+                    <li><a href="#" class="hover:text-gray-200">Politique de confidentialité</a></li>
+                    <li><a href="#" class="hover:text-gray-200">Conditions d'utilisation</a></li>
+                    <li><a href="#" class="hover:text-gray-200">Support</a></li>
+                </ul>
+            </div>
+
+            <!-- Quick Contact Form -->
+            <div>
+                <h2 class="font-bold text-lg mb-4">Contactez-nous</h2>
+                <form action="/submit-contact-form" method="POST">
+                    <input type="text" name="name" placeholder="Votre nom" class="w-full p-2 mb-2 rounded">
+                    <input type="email" name="email" placeholder="Votre email" class="w-full p-2 mb-2 rounded">
+                    <textarea name="message" placeholder="Votre message" class="w-full p-2 mb-4 rounded"></textarea>
+                    <button type="submit"
+                    class="bg-green-500 text-white p-3 mt-4 uppercase rounded-sm shadow-md hover:bg-green-700">Envoyer</button>
+                </form>
+            </div>
+
+
+        </div>
+        <div class="text-center mt-8">
+            <p>&copy; 2024 Eco-Responsable Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('You need to log in first.');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            const res = await fetch('http://localhost:3000/api/users/me', {
+                headers: {
+                    'x-auth-token': token
+                }
+            });
+
+            if (res.status !== 200) {
+                alert('Failed to load user info.');
+                return;
+            }
+
+            const user = await res.json();
+            window.location.href = user.isAdmin ? 'http://localhost/eco-responsable/public/frontend/pages/admin_dashboard.html' : '#';
+            document.getElementById('username').textContent = user.username;
+            document.getElementById('commune').textContent = user.commune;
+            document.getElementById('GoodBottlesCollected').textContent = user.GoodBottlesCollected;
+            document.getElementById('BadBottlesCollected').textContent = user.BadBottlesCollected;
+            document.getElementById('score').textContent = user.score;
+            document.getElementById('profit').textContent = user.profit;
+            document.getElementById('withdrawal').textContent = user.withdrawal;
+            document.getElementById('accumulation').textContent = user.accumulation;
+
+            document.getElementById('logout-btn').addEventListener('click', () => {
+                localStorage.removeItem('token');
+                window.location.href = 'index.html';
+            });
+        });
+    </script>
+</body>
+</html>

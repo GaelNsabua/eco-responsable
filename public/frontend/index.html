@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eco-Responsable</title>
+    <link href="./output.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.1/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+</head>
+<body class="bg-gray-100">
+    <!-- Header -->
+    <nav class= "bg-black bg-opacity-50 backdrop-blur-sm shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+            <div class="relative flex items-center justify-between h-16">
+                <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
+                    <!-- Mobile menu button-->
+                    <button id="mobile-menu-button"
+                        class="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-gray-300 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16m-7 6h7" />
+                        </svg>
+                        <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-between">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-2xl text-white font-bold">Eco-Responsable</h1>
+                    </div>
+                    <div class="hidden sm:block sm:ml-6 mr-10">
+                        <div class="flex space-x-4">
+                            <a href="#"
+                                class="text-white hover:bg-green-300 hover:text-white px-3 py-2 rounded-md text-lg font-medium">Accueil</a>
+                            <a href="#"
+                                class="text-white hover:bg-green-300 hover:text-white px-3 py-2 rounded-md text-lg font-medium">Astuces</a>
+                            <a href="#"
+                                class="text-white hover:bg-green-300 hover:text-white px-3 py-2 rounded-md text-lg font-medium">Articles</a>
+                            <a href="#"
+                                class="text-white hover:bg-green-300 hover:text-white px-3 py-2 rounded-md text-lg font-medium">Contact</a>
+                        </div>
+                    </div>
+                    <div class="hidden md:block transform duration-150 hover:-translate-x-2 py-3">
+                        <a href="http://localhost/eco-responsable/public/frontend/pages/challenge.html" class="bg-white text-green-500 font-bold shadow-md px-4 py-2 rounded hover:bg-green-100">S'INSCRIRE</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile menu, show/hide based on menu state. -->
+        <div id="mobile-menu" class="hidden sm:hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="http://localhost/eco-responsable/public/frontend/"
+                    class="text-white hover:bg-blue-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Accueil</a>
+                <a href="#"
+                    class="text-white hover:bg-blue-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Universités</a>
+                <a href="#"
+                    class="text-white hover:bg-blue-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Formations</a>
+                <a href="#"
+                    class="text-white hover:bg-blue-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- banner 1  -->
+    <section class="bg-cover bg-center md:pt-16 h-full rounded-b-3xl text-white pt-24" style="background-image: url('images/img-1.jpg');"
+            data-aos="fade-down" data-aos-delay="400">
+            <div class="container mx-auto h-full flex items-center justify-center"  data-aos="fade-up" data-aos-delay="600">
+                <h2 class="md:text-5xl text-2xl font-bold my-48 bg-black bg-opacity-50 p-4 rounded">Prendre soin de notre environnement
+                </h2>
+            </div>
+    </section>
+
+    <main class="container mx-auto px-20 py-5">
+         <!-- Popular Categories Section -->
+         <section class="my-8" data-aos="fade-up">
+            <h2 class="text-4xl text-center text-green-700 font-bold mb-4">Bon à savoir</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                <div class="p-4 bg-green-600 rounded shadow hover:bg-green-400 cursor-pointer">
+                    <h3 class="text-lg text-white font-semibold">Ecologie</h3>
+                </div>
+                <div class="p-4  bg-green-600 rounded shadow hover:bg-green-400 cursor-pointer">
+                    <h3 class="text-lg text-white font-semibold">Recyclage</h3>
+                </div>
+                <div class="p-4  bg-green-600 rounded shadow hover:bg-green-400 cursor-pointer">
+                    <h3 class="text-lg text-white font-semibold">Environnement</h3>
+                </div>
+                <div class="p-4  bg-green-600 rounded shadow hover:bg-green-400 cursor-pointer">
+                    <h3 class="text-lg text-white font-semibold">Nature</h3>
+                </div>
+            </div>
+        </section>
+
+        <section class="flex flex-col md:flex-row items-center justify-between space-x-4 bg-green-300 container mx-auto my-8 p-4 shadow-md rounded" data-aos="fade-up">
+            <div class="md:w-1/2">
+                <img src="images/img-2.jpg" alt="Bannière Image" class="w-full h-auto rounded">
+            </div>
+            <div class="md:w-1/2 p-4">
+                <h2 class="text-3xl font-bold text-green-600">Inscrivez-vous pour participer</h2>
+                <p class="mt-4 text-lg">Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque ipsam ut illo voluptas accusantium pariatur, praesentium mollitia autem dolor hic suscipit ducimus vel blanditiis possimus tempore ipsum dolore saepe exercitationem.</p>
+                <a href="http://localhost/eco-responsable/public/frontend/pages/challenge.html"><button class="bg-green-500 text-white p-3 mt-4 uppercase rounded-sm shadow-md hover:bg-green-700">S'inscrire</button></a>
+            </div>
+        </section>
+    </main>
+
+    <div class="bg-cover bg-center h-64 my-5 rounded-t-xl overflow-hidden" style="background-image: url('images/img-3.jpg');" data-aos="fade-down">
+        <div class="flex items-center justify-center h-full bg-gray-900 bg-opacity-50">
+            <h1 class="md:text-4xl text-2xl text-white font-bold">Découvrez le recyclage des dechets</h1>
+        </div>
+    </div>
+
+    <!-- Challenge Section -->
+    <section class="flex flex-col md:flex-row items-center justify-between container mx-auto my-8 p-4 shadow-md" data-aos="fade-up">
+        <div class="md:w-1/2">
+            <img src="images/img-2.jpg" alt="Bannière Image" class="w-full h-auto rounded">
+        </div>
+        <div class="md:w-1/2 p-4">
+            <h2 class="text-3xl font-bold text-green-600">Inscrivez-vous pour participer</h2>
+            <p class="mt-4 text-lg">Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque ipsam ut illo voluptas accusantium pariatur, praesentium mollitia autem dolor hic suscipit ducimus vel blanditiis possimus tempore ipsum dolore saepe exercitationem.</p>
+            <a href="http://localhost/eco-responsable/public/frontend/pages/login.html"><button class="bg-green-500 text-white p-3 mt-4 uppercase rounded-sm shadow-md hover:bg-green-700">S'inscrire</button></a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-r from-green-500 to-green-800 text-white p-8" data-aos="fade-up">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
+            <!-- Social Links -->
+            <div class="flex flex-col">
+                <h2 class="font-bold text-lg mb-4">Suivez-nous</h2>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-white"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-white"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-white"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="text-white"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+
+            <!-- Additional Links or Text -->
+            <div>
+                <h2 class="font-bold text-lg mb-4">Ressources</h2>
+                <ul>
+                    <li><a href="#" class="hover:text-gray-200">FAQ</a></li>
+                    <li><a href="#" class="hover:text-gray-200">Politique de confidentialité</a></li>
+                    <li><a href="#" class="hover:text-gray-200">Conditions d'utilisation</a></li>
+                    <li><a href="#" class="hover:text-gray-200">Support</a></li>
+                </ul>
+            </div>
+
+            <!-- Quick Contact Form -->
+            <div>
+                <h2 class="font-bold text-lg mb-4">Contactez-nous</h2>
+                <form action="/submit-contact-form" method="POST">
+                    <input type="text" name="name" placeholder="Votre nom" class="w-full p-2 mb-2 rounded">
+                    <input type="email" name="email" placeholder="Votre email" class="w-full p-2 mb-2 rounded">
+                    <textarea name="message" placeholder="Votre message" class="w-full p-2 mb-4 rounded"></textarea>
+                    <button type="submit"
+                    class="bg-green-500 text-white p-3 mt-4 uppercase rounded-sm shadow-md hover:bg-green-700">Envoyer</button>
+                </form>
+            </div>
+
+
+        </div>
+        <div class="text-center mt-8">
+            <p>&copy; 2024 Eco-Responsable Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script>
+    </script>
+   
+<script src="index.js"></script>
+</body>
+
+</html>

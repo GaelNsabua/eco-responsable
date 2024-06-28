@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.1/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <!-- Navbar -->
+    <nav class="bg-green-500 p-4 text-white">
+        <div class="container mx-auto">
+            <div class="flex justify-between">
+                <div class="font-bold text-lg">
+                   Eco-Responsable
+                </div>
+                <div>
+                    <a href="http://localhost/eco-responsable/public/frontend/pages/login.html" class="mr-4">Home</a>
+                    <a href="http://localhost/eco-responsable/public/frontend/pages/history.html" class="mr-4">Update Hystory</a>
+                    <a href="http://localhost/eco-responsable/public/frontend/pages/admin_dashboard.html" class="mr-4">Admin Dashboard</a>
+                    <a href="#" id="logout-btn">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <section class="container mx-auto px-6 py-12">
+        <h2 class="text-4xl font-bold text-center mb-8">Admin Dashboard</h2>
+        <div id="users-list" class="max-w-7xl mx-auto bg-white p-6 rounded-lg shadow-lg overflow-x-scroll">
+            <h3 class="text-2xl font-semibold mb-4">Users List</h3>
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr>
+                        <th class="border-b p-4">Nom utilisateur</th>
+                        <th class="border-b p-4">Commune</th>
+                        <th class="border-b p-4">Nb Bouteilles pleines collectées</th>
+                        <th class="border-b p-4">Nb Bouteilles froissées collectées</th>
+                        <th class="border-b p-4">Gain courant</th>
+                        <th class="border-b p-4">Gain retiré</th>
+                        <th class="border-b p-4">Gain cumulé</th>
+                        <th class="border-b p-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="users-table-body">
+                    <!-- Users will be appended here -->
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white text-center w-full py-6">
+        <p>&copy; 2024 Eco-Responsable. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('You need to log in first.');
+                window.location.href = 'http://localhost/eco-responsable/public/frontend/pages/login.html';
+                return;
+            }
+
+            const res = await fetch('http://localhost:3000/api/users', {
+                headers: {
+                    'x-auth-token': token
+                }
+            });
+
+            if (res.status !== 200) {
+                alert('Failed to load users.');
+                window.location.href = 'http://localhost/eco-responsable/public/frontend/';
+                return;
+            }
+
+            const users = await res.json();
+            const usersTableBody = document.getElementById('users-table-body');
+            usersTableBody.innerHTML = '';
+
+            users.forEach(user => {
+                if (!user.isAdmin) {
+                    const userRow = document.createElement('tr');
+                         userRow.innerHTML = `
+                             <td class="border-b p-4">${user.username}</td>
+                             <td class="border-b p-4">${user.commune}</td>
+                             <td class="border-b p-4">${user.GoodBottlesCollected}</td>
+                             <td class="border-b p-4">${user.BadBottlesCollected}</td>
+                             <td class="border-b p-4">${user.profit}</td>
+                             <td class="border-b p-4">${user.withdrawal}</td>
+                             <td class="border-b p-4">${user.accumulation}</td>
+                             <td class="border-b p-4">
+                                 <button data-user-id="${user._id}" class="bg-blue-500 text-white px-4 py-2 rounded-md edit-btn">Edit</button>
+                             </td>
+                         `;
+                    usersTableBody.appendChild(userRow);
+                }
+            });
+
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const userId = e.target.getAttribute('data-user-id');
+                    const GoodBottlesCollected = prompt(`Entrer le nombre de bouteilles pleines collectées :`);
+                    const BadBottlesCollected = prompt(`Entrer le nombre de bouteilles froissées collectées :`);
+                    const userWithdrawal = prompt('Entrer la somme retiré :');
+
+                    if ( GoodBottlesCollected !== null) {
+                        const res = await fetch('http://localhost:3000/api/users/update-score', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'x-auth-token': token
+                            },
+                            body: JSON.stringify({ userId, GoodBottlesCollected: parseInt(GoodBottlesCollected), BadBottlesCollected: parseInt(BadBottlesCollected), userWithdrawal: parseInt(userWithdrawal) })
+                        });
+
+                        if (res.status === 200) {
+                            alert('Score updated successfully');
+                            location.reload();
+                        } else {
+                            const data = await res.json();
+                            alert('Error: ' + data.error);
+                        }
+                    }
+                });
+            });
+
+            document.getElementById('logout-btn').addEventListener('click', () => {
+                localStorage.removeItem('token');
+                window.location.href = 'index.html';
+            });
+        });
+    </script>
+</body>
+</html>

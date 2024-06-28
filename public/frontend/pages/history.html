@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.1/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <!-- Navbar -->
+    <nav class="bg-green-500 p-4 text-white">
+        <div class="container mx-auto">
+            <div class="flex justify-between">
+                <div class="font-bold text-lg">
+                   Eco-Responsable
+                </div>
+                <div>
+                    <a href="http://localhost/eco-responsable/public/frontend/pages/login.html" class="mr-4">Home</a>
+                    <a href="http://localhost/eco-responsable/public/frontend/pages/history.html" class="mr-4">Update Hystory</a>
+                    <a href="http://localhost/eco-responsable/public/frontend/pages/admin_dashboard.html" class="mr-4">Admin Dashboard</a>
+                    <a href="#" id="logout-btn">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="container mx-auto px-6 py-12">
+        <h2 class="text-4xl font-bold text-center mb-8">Updates history</h2>
+        <div id="adjustments-list" class="max-w-7xl mx-auto bg-white p-6 my-4 rounded-lg shadow-lg  overflow-x-scroll">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr>
+                        <th class="border-b p-4">Date</th>
+                        <th class="border-b p-4">Pseudo utilisateur</th>
+                        <th class="border-b p-4">Admin</th>
+                        <th class="border-b p-4">Previous Bottles Collected</th>
+                        <th class="border-b p-4">New Bottles Collected</th>
+                        <th class="border-b p-4">Previous Bad Bottles Collected</th>
+                        <th class="border-b p-4">New Bad Bottles Collected</th>
+                        <th class="border-b p-4">Previous withdrawal</th>
+                        <th class="border-b p-4">New withdrawal</th>
+                        <th class="border-b p-4">Previous profit</th>
+                        <th class="border-b p-4">New profit</th>
+                        <th class="border-b p-4">Previous accumulation</th>
+                        <th class="border-b p-4">New accumulation</th>
+                    </tr>
+                </thead>
+                <tbody id="adjustments-table-body">
+                    <!-- Adjustments will be appended here -->
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white text-center py-6">
+        <p>&copy; 2024 Eco-Responsable. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('You need to log in first.');
+                window.location.href = 'http://localhost/eco-responsable/public/frontend/pages/login.html';
+                return;
+            }
+
+            // Fetch score adjustment history
+            const resAdjustments = await fetch('http://localhost:3000/api/history/adjustments', {
+                headers: {
+                    'x-auth-token': token
+                }
+            });
+
+            if (resAdjustments.status !== 200) {
+                alert('Failed to load score adjustment history.');
+                return;
+            }
+
+            const adjustments = await resAdjustments.json();
+            const adjustmentsTableBody = document.getElementById('adjustments-table-body');
+            adjustmentsTableBody.innerHTML = '';
+
+            adjustments.forEach(adjustment => {
+                const adjustmentRow = document.createElement('tr');
+                adjustmentRow.innerHTML = `
+                    <td class="border-b p-4">${new Date(adjustment.adjustmentDate).toLocaleString()}</td>
+                    <td class="border-b p-4">${adjustment.userId.username}</td>
+                    <td class="border-b p-4">${adjustment.adminId.username}</td>
+                    <td class="border-b p-4">${adjustment.previousGoodBottlesCollected}</td>
+                    <td class="border-b p-4">${adjustment.newGoodBottlesCollected}</td>
+                    <td class="border-b p-4">${adjustment.previousBadBottlesCollected}</td>
+                    <td class="border-b p-4">${adjustment.newBadBottlesCollected}</td>
+                    <td class="border-b p-4">${adjustment.previouswithdrawal}</td>
+                    <td class="border-b p-4">${adjustment.newWithdrawal}</td>
+                    <td class="border-b p-4">${adjustment.previousprofit}</td>
+                    <td class="border-b p-4">${adjustment.newprofit}</td>
+                    <td class="border-b p-4">${adjustment.previousaccumulation}</td>
+                    <td class="border-b p-4">${adjustment.newaccumulation}</td>
+                `;
+                adjustmentsTableBody.appendChild(adjustmentRow);
+            });
+
+            document.getElementById('logout-btn').addEventListener('click', () => {
+                localStorage.removeItem('token');
+                window.location.href = 'index.html';
+            });
+        });
+    </script>
+</body>
+</html>
