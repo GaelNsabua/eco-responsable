@@ -1,0 +1,1 @@
+This project aims to raise awareness about waste management and recycling through an engaging and interactive web platform. it will feature a competitive element where users can participate in challenges to collect and report waste, earning rewards based on their efforts.
