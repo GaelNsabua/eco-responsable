@@ -8,7 +8,7 @@
 </head>
 <body class="bg-gray-100">
     <!-- Header -->
-    <nav class= "bg-black bg-opacity-50 backdrop-blur-sm shadow-lg fixed w-full z-50">
+    <nav class="bg-black bg-opacity-50 backdrop-blur-sm shadow-lg fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
             <div class="relative flex items-center justify-between h-16">
                 <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -63,22 +63,49 @@
         </div>
     </nav>
 
-
     <!-- Dashboard Content -->
     <section class="container mx-auto px-6 py-20">
         <h2 class="text-4xl font-bold text-center mb-8">Mon tableau de bord</h2>
-        <div id="user-info" class="max-w-3xl mx-auto bg-green-200 p-6 rounded-lg shadow-lg">
+        <div id="user-info" class="max-w-3xl mx-auto bg-green-50 p-6 rounded-lg shadow-lg">
             <h3 class="text-2xl font-semibold mb-4">Mes informations</h3>
-            <div class="text-lg">
-                <p><strong>Pseudo : </strong> <span id="username"></span></p>
-                <p><strong>Commune : </strong> <span id="commune"></span></p>
-                <p><strong>Nombre bouteilles pleines collectées : </strong> <span id="GoodBottlesCollected"></span></p>
-                <p><strong>Nombre bouteilles froissées collectées : </strong> <span id="BadBottlesCollected"></span></p>
-                <p><strong>Score : </strong> <span id="score"></span></p>
-                <p><strong>Gain courant : </strong> <span id="profit"></span> CDF</p>
-                <p><strong>Gain retiré : </strong> <span id="withdrawal"></span> CDF</p>
-                <p><strong>Gain cumulé : </strong> <span id="accumulation"></span> CDF</p>
-            </div>
+            <table class="min-w-full bg-white">
+                <thead class="bg-green-500 text-white">
+                    <tr>
+                        <th class="w-1/2 py-2 px-4">Nom</th>
+                        <th class="w-1/2 py-2 px-4">Valeur</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="border-b">
+                        <td class="py-2 px-4 font-semibold">Pseudo</td>
+                        <td class="py-2 px-4" id="username"></td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="py-2 px-4 font-semibold">Commune</td>
+                        <td class="py-2 px-4" id="commune"></td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="py-2 px-4 font-semibold">Poids bouteilles collectées</td>
+                        <td class="py-2 px-4" id="BottlesCollectedWeight"></td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="py-2 px-4 font-semibold">Score</td>
+                        <td class="py-2 px-4" id="score"></td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="py-2 px-4 font-semibold">Gain courant</td>
+                        <td class="py-2 px-4" id="profit"></td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="py-2 px-4 font-semibold">Gain retiré</td>
+                        <td class="py-2 px-4" id="withdrawal"></td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="py-2 px-4 font-semibold">Gain cumulé</td>
+                        <td class="py-2 px-4" id="accumulation"></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </section>
 
@@ -118,19 +145,19 @@
                     class="bg-green-500 text-white p-3 mt-4 uppercase rounded-sm shadow-md hover:bg-green-700">Envoyer</button>
                 </form>
             </div>
-
-
         </div>
         <div class="text-center mt-8">
             <p>&copy; 2024 Eco-Responsable Tous droits réservés.</p>
         </div>
     </footer>
 
+    <div id="notification-container" class="fixed top-0 right-0 m-4"></div>
+
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
             const token = localStorage.getItem('token');
             if (!token) {
-                alert('You need to log in first.');
+                showNotification('You need to log in first.', 'error');
                 window.location.href = 'index.html';
                 return;
             }
@@ -142,26 +169,33 @@
             });
 
             if (res.status !== 200) {
-                alert('Failed to load user info.');
+                showNotification('Failed to load user information.', 'error');
                 return;
             }
 
             const user = await res.json();
-            window.location.href = user.isAdmin ? 'http://localhost/eco-responsable/public/frontend/pages/admin_dashboard.html' : '#';
+            window.location.href = user.isAdmin ? 'http://localhost/eco-responsable/public/frontend/pages/admin/admin_dashboard.html' : '#';
             document.getElementById('username').textContent = user.username;
             document.getElementById('commune').textContent = user.commune;
-            document.getElementById('GoodBottlesCollected').textContent = user.GoodBottlesCollected;
-            document.getElementById('BadBottlesCollected').textContent = user.BadBottlesCollected;
+            document.getElementById('BottlesCollectedWeight').textContent = user.BottlesCollectedWeight + "Kg";
             document.getElementById('score').textContent = user.score;
-            document.getElementById('profit').textContent = user.profit;
-            document.getElementById('withdrawal').textContent = user.withdrawal;
-            document.getElementById('accumulation').textContent = user.accumulation;
-
-            document.getElementById('logout-btn').addEventListener('click', () => {
-                localStorage.removeItem('token');
-                window.location.href = 'index.html';
-            });
+            document.getElementById('profit').textContent = `${user.profit} CDF`;
+            document.getElementById('withdrawal').textContent = `${user.withdrawal} CDF`;
+            document.getElementById('accumulation').textContent = `${user.accumulation} CDF`;
         });
+
+        // Function to show notification
+        function showNotification(message, type) {
+            const notificationContainer = document.getElementById('notification-container');
+            const notification = document.createElement('div');
+            notification.className = `p-4 mb-4 rounded-lg shadow-md ${type === 'error' ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`;
+            notification.textContent = message;
+            notificationContainer.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
     </script>
 </body>
 </html>

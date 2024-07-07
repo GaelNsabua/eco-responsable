@@ -20,9 +20,12 @@ mongoose.connect(process.env.MONGO_URI, {
 // Routes
 const userRoutes = require('./routes/users');
 const historyRoutes = require('./routes/history');
+const reportRoutes = require('./routes/report');
 
 app.use('/api/users', userRoutes);
 app.use('/api/history', historyRoutes);
+app.use('/api/report', reportRoutes);
+
 
 // Global error handler
 app.use((err, req, res, next) => {

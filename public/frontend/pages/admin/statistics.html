@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.1/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <!-- Navbar -->
+    <nav class="bg-green-500 p-4 text-white">
+        <div class="container mx-auto">
+            <div class="flex justify-between">
+                <div class="font-bold text-lg">
+                   Eco-Responsable
+                </div>
+                <div>
+                    <a href="http://localhost/eco-responsable/public/frontend/pages/login.html" class="mr-4">Home</a>
+                    <a href="http://localhost/eco-responsable/public/frontend/pages/admin/history.html" class="mr-4">Update History</a>
+                    <a href="http://localhost/eco-responsable/public/frontend/pages/admin/admin_dashboard.html" class="mr-4">Admin Dashboard</a>
+                    <a href="http://localhost/eco-responsable/public/frontend/pages/admin/statistics.html" class="mr-4">Statistics</a>
+                    <a href="#" id="logout-btn">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Notification container -->
+    <div id="notification-container" class="fixed top-4 right-4 z-50 space-y-4"></div>
+
+    <!-- Statistics Content -->
+    <section class="container mx-auto px-6 py-12">
+        <h2 class="text-4xl font-bold text-center mb-8">Statistics</h2>
+        <!-- Global Statistics -->
+        <div class="max-w-7xl mx-auto bg-white p-6 rounded-lg shadow-lg mb-12">
+            <h3 class="text-2xl font-semibold mb-4">Global Statistics</h3>
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-green-500 text-white">
+                    <th class="border-b p-4">Name</th>
+                    <th class="border-b p-4">Value</th>
+                </thead> 
+                <tbody>
+                    <tr>
+                        <td class="border-b p-4">Total Users</td>
+                        <td id="total-users" class="border-b p-4"></td>
+                    </tr>
+                    <tr>
+                        <td class="border-b p-4">Total Weight</td>
+                        <td id="total-weight" class="border-b p-4"></td>
+                    </tr>
+                    <tr>
+                        <td class="border-b p-4">Total Profits</td>
+                        <td id="total-profits" class="border-b p-4"></td>
+                    </tr> 
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Statistics by Commune -->
+        <div class="max-w-7xl mx-auto bg-white p-6 rounded-lg shadow-lg mb-12">
+           <h3 class="text-2xl font-semibold mb-4">Statistics by Commune</h3>
+           <table class="w-full text-left border-collapse">
+               <thead class="bg-green-500 text-white">
+                   <tr>
+                       <th class="border-b p-4">Commune</th>
+                       <th class="border-b p-4">Total Users</th>
+                       <th class="border-b p-4">Total Weight</th>
+                       <th class="border-b p-4">Total Profits</th>
+                   </tr>
+               </thead>
+               <tbody id="communes-stats-body">
+                   <!-- Commune stats will be appended here -->
+               </tbody>
+           </table>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white text-center w-full py-6">
+        <p>&copy; 2024 Eco-Responsable. All rights reserved.</p>
+    </footer>
+
+    <div id="notification-container" class="fixed top-0 right-0 m-4"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                showNotification('You need to log in first.', 'error');
+                window.location.href = 'http://localhost/eco-responsable/public/frontend/pages/login.html';
+                return;
+            }
+
+            // Fetch global statistics
+            const statsRes = await fetch('http://localhost:3000/api/report/global', {
+                headers: {
+                    'x-auth-token': token
+                }
+            });
+
+            if (statsRes.status === 200) {
+                const stats = await statsRes.json();
+                document.getElementById('total-users').textContent = stats.totalUsers;
+                document.getElementById('total-weight').textContent = stats.totalWeight + "Kg";
+                document.getElementById('total-profits').textContent = stats.totalAccumulation;
+            } else {
+                showNotification('Failed to load global statistics.', 'error');
+            }
+
+           // Fetch statistics by commune
+           const communeStatsRes = await fetch('http://localhost:3000/api/report/commune', {
+                headers: {
+                    'x-auth-token': token
+                }
+            });
+
+            if (communeStatsRes.status === 200) {
+                const communeStats = await communeStatsRes.json();
+                const communesStatsBody = document.getElementById('communes-stats-body');
+                communesStatsBody.innerHTML = '';
+
+                // Append each commune's stats to the table
+                communeStats.forEach(stat => {
+                    const statRow = document.createElement('tr');
+                    statRow.innerHTML = `
+                        <td class="border-b p-4">${stat.commune}</td>
+                        <td class="border-b p-4">${stat.totalUsers}</td>
+                        <td class="border-b p-4">${stat.totalWeight}Kg</td>
+                        <td class="border-b p-4">${stat.totalProfits}</td>
+                    `;
+                    communesStatsBody.appendChild(statRow);
+                });
+            } else {
+                showNotification('Failed to load commune statistics.', 'error');
+            }
+
+            // Handle logout button click
+            document.getElementById('logout-btn').addEventListener('click', () => {
+                localStorage.removeItem('token');
+                window.location.href = 'index.html';
+            });
+
+            // Function to show notification
+            function showNotification(message, type) {
+                const notificationContainer = document.getElementById('notification-container');
+                const notification = document.createElement('div');
+                notification.className = `p-4 mb-4 rounded-lg shadow-md ${type === 'error' ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`;
+                notification.textContent = message;
+                notificationContainer.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>

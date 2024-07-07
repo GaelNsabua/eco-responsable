@@ -5,8 +5,7 @@ const UserSchema = new mongoose.Schema({
     password: { type: String, required: true },
     commune: { type: String, required: true },
     score: { type: Number, default: 0 },
-    GoodBottlesCollected: { type: Number, default: 0 }, //Nombre de bouteille pleines collectés
-    BadBottlesCollected: { type: Number, default: 0 }, //Nombre de bouteilles froissé collectées
+    BottlesCollectedWeight: { type: Number, default: 0 }, //Poids des bouteilles collectées
     withdrawal:{ type: Number, default: 0 }, //Correspond à la somme que l'utilisateur à deja retiré (Gain retiré)
     profit:{ type: Number, default: 0 }, //Correspond au gain courant donc la somme que l'utilisateur peut encore retirer (Gain courant)
     accumulation:{ type: Number, default: 0 }, //Correspond à la somme que l'utilisateur à deja empocher jusque là

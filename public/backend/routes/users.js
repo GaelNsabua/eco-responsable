@@ -99,7 +99,7 @@ router.get('/', auth, auth.isAdmin, async (req, res) => {
 
 // Update user's score (Admin only)
 router.post('/update-score', auth, auth.isAdmin, async (req, res) => {
-    const { userId, GoodBottlesCollected, BadBottlesCollected, userWithdrawal } = req.body;
+    const { userId, BottlesCollectedWeight, userWithdrawal } = req.body;
 
     try {
         let user = await User.findById(userId);
@@ -107,16 +107,14 @@ router.post('/update-score', auth, auth.isAdmin, async (req, res) => {
             return res.status(400).json({ error: 'User not found' });
         }
 
-        const previousGoodBottlesCollected = user.GoodBottlesCollected;
-        const previousBadBottlesCollected = user.BadBottlesCollected;
+        const previousBottlesCollectedWeight = user.BottlesCollectedWeight;
         const previouswithdrawal = user.withdrawal;
         const previousprofit = user.profit;
         const previousaccumulation = user.accumulation;
 
-        user.GoodBottlesCollected = user.GoodBottlesCollected+GoodBottlesCollected; //On update les bouteilles pleines collectés en additionnant
-        user.BadBottlesCollected = user.BadBottlesCollected+BadBottlesCollected;//On update les bouteilles froissées collectés en additionnant
-        user.score = ((user.GoodBottlesCollected)/1000) + ((user.BadBottlesCollected)/1000); // Assuming score is directly tied to bottlesCollected
-        user.profit = user.profit + ((GoodBottlesCollected*10000)/100) + ((BadBottlesCollected*5000)/100); // Calcul du gain en considerant que 100 bouteilles equivalent à 10000fc et on update le profit en additionnant
+        user.BottlesCollectedWeight = user.BottlesCollectedWeight+BottlesCollectedWeight; //On update le poids des bouteilles collectés en additionnant
+        user.score = ((user.BottlesCollectedWeight)/1000) 
+        user.profit = user.profit + ((BottlesCollectedWeight*5000)/2.5); // Calcul du gain en considerant que 2.5Kg de bouteilles equivalent à 5000fc et on update le profit en additionnant
         user.profit = (user.profit - userWithdrawal); //On soustrait le retrait dans le profit afin de trouver le gain courant
         //Le gain courant ne peut pas être inferieur à 500 après calcul
         if (user.profit < 500) {
@@ -133,10 +131,8 @@ router.post('/update-score', auth, auth.isAdmin, async (req, res) => {
         const adjustment = new history({
             userId: user._id,
             adminId: req.user.id,
-            previousGoodBottlesCollected,
-            newGoodBottlesCollected: GoodBottlesCollected,
-            previousBadBottlesCollected,
-            newBadBottlesCollected: BadBottlesCollected,
+            previousBottlesCollectedWeight,
+            newBottlesCollectedWeight: BottlesCollectedWeight,
             previouswithdrawal,
             newWithdrawal: user.withdrawal,
             previousprofit,

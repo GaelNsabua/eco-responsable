@@ -16,8 +16,9 @@
                 </div>
                 <div>
                     <a href="http://localhost/eco-responsable/public/frontend/pages/login.html" class="mr-4">Home</a>
-                    <a href="http://localhost/eco-responsable/public/frontend/pages/history.html" class="mr-4">Update Hystory</a>
-                    <a href="http://localhost/eco-responsable/public/frontend/pages/admin_dashboard.html" class="mr-4">Admin Dashboard</a>
+                    <a href="http://localhost/eco-responsable/public/frontend/pages/admin/history.html" class="mr-4">Update History</a>
+                    <a href="http://localhost/eco-responsable/public/frontend/pages/admin/admin_dashboard.html" class="mr-4">Admin Dashboard</a>
+                    <a href="http://localhost/eco-responsable/public/frontend/pages/admin/statistics.html" class="mr-4">Statistics</a>
                     <a href="#" id="logout-btn">Logout</a>
                 </div>
             </div>
@@ -28,15 +29,13 @@
         <h2 class="text-4xl font-bold text-center mb-8">Updates history</h2>
         <div id="adjustments-list" class="max-w-7xl mx-auto bg-white p-6 my-4 rounded-lg shadow-lg  overflow-x-scroll">
             <table class="w-full text-left border-collapse">
-                <thead>
+                <thead class="bg-green-500 text-white">
                     <tr>
                         <th class="border-b p-4">Date</th>
                         <th class="border-b p-4">Pseudo utilisateur</th>
                         <th class="border-b p-4">Admin</th>
-                        <th class="border-b p-4">Previous Bottles Collected</th>
-                        <th class="border-b p-4">New Bottles Collected</th>
-                        <th class="border-b p-4">Previous Bad Bottles Collected</th>
-                        <th class="border-b p-4">New Bad Bottles Collected</th>
+                        <th class="border-b p-4">Previous Bottles Collected Weight</th>
+                        <th class="border-b p-4">New Bottles Collected Weight</th>
                         <th class="border-b p-4">Previous withdrawal</th>
                         <th class="border-b p-4">New withdrawal</th>
                         <th class="border-b p-4">Previous profit</th>
@@ -57,12 +56,14 @@
         <p>&copy; 2024 Eco-Responsable. All rights reserved.</p>
     </footer>
 
+    <div id="notification-container" class="fixed top-0 right-0 m-4"></div>
+
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
             const token = localStorage.getItem('token');
             if (!token) {
-                alert('You need to log in first.');
-                window.location.href = 'http://localhost/eco-responsable/public/frontend/pages/login.html';
+                showNotification('You need to log in first.', 'error');
+                window.location.href = 'login.html';
                 return;
             }
 
@@ -74,7 +75,7 @@
             });
 
             if (resAdjustments.status !== 200) {
-                alert('Failed to load score adjustment history.');
+                showNotification('Failed to load score adjustment history.', 'error');
                 return;
             }
 
@@ -88,10 +89,8 @@
                     <td class="border-b p-4">${new Date(adjustment.adjustmentDate).toLocaleString()}</td>
                     <td class="border-b p-4">${adjustment.userId.username}</td>
                     <td class="border-b p-4">${adjustment.adminId.username}</td>
-                    <td class="border-b p-4">${adjustment.previousGoodBottlesCollected}</td>
-                    <td class="border-b p-4">${adjustment.newGoodBottlesCollected}</td>
-                    <td class="border-b p-4">${adjustment.previousBadBottlesCollected}</td>
-                    <td class="border-b p-4">${adjustment.newBadBottlesCollected}</td>
+                    <td class="border-b p-4">${adjustment.previousBottlesCollectedWeight}Kg</td>
+                    <td class="border-b p-4">${adjustment.newBottlesCollectedWeight}Kg</td>
                     <td class="border-b p-4">${adjustment.previouswithdrawal}</td>
                     <td class="border-b p-4">${adjustment.newWithdrawal}</td>
                     <td class="border-b p-4">${adjustment.previousprofit}</td>
@@ -106,6 +105,19 @@
                 localStorage.removeItem('token');
                 window.location.href = 'index.html';
             });
+
+            // Function to show notification
+            function showNotification(message, type) {
+                const notificationContainer = document.getElementById('notification-container');
+                const notification = document.createElement('div');
+                notification.className = `p-4 mb-4 rounded-lg shadow-md ${type === 'error' ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`;
+                notification.textContent = message;
+                notificationContainer.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+            }
         });
     </script>
 </body>

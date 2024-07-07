@@ -3,10 +3,8 @@ const mongoose = require('mongoose');
 const HystorySchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     adminId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    previousGoodBottlesCollected: { type: Number, required: true },
-    newGoodBottlesCollected: { type: Number, required: true },
-    previousBadBottlesCollected: { type: Number, default: 0 },
-    newBadBottlesCollected: { type: Number, default: 0 },
+    previousBottlesCollectedWeight: { type: Number, required: true },
+    newBottlesCollectedWeight: { type: Number, required: true },
     previouswithdrawal:{ type: Number, default: 0 },
     newWithdrawal:{ type: Number, default: 0 },
     previousprofit:{ type: Number, default: 0 },
