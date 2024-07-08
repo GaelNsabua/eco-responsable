@@ -1,21 +1,25 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/users');
+const Statistic = require('../models/statistic');
 const auth = require('../middleware/auth');
+
+// Function to calculate global statistics
+async function calculateGlobalStatistics() {
+    const users = await User.find({ isAdmin: false });
+
+    const totalUsers = users.length;
+    const totalWeight = users.reduce((acc, user) => acc + user.BottlesCollectedWeight, 0);
+    const totalAccumulation = users.reduce((acc, user) => acc + user.accumulation, 0);
+
+    return { totalUsers, totalWeight, totalAccumulation };
+}
 
 // Route to get global statistics
 router.get('/global', async (req, res) => {
     try {
-        // Find all users who are not administrators
-        const users = await User.find({ isAdmin: false });
-
-        // Calculate the statistics
-        const totalUsers = users.length;
-        const totalWeight = users.reduce((acc, user) => acc + user.BottlesCollectedWeight, 0);
-        const totalAccumulation = users.reduce((acc, user) => acc + user.accumulation, 0);
-
-        // Send the statistics in the response
-        res.json({ totalUsers, totalWeight, totalAccumulation });
+        const statistics = await calculateGlobalStatistics();
+        res.json(statistics);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Server error' });
@@ -75,6 +79,59 @@ router.get('/commune', auth, async (req, res) => {
         res.json(statsByCommune);
     } catch (err) {
         res.status(500).send('Server Error');
+    }
+});
+
+// Route to get statistics for graph representation
+router.get('/statistics', auth, async (req, res) => {
+    try {
+        // Find all statistics entries and sort by date
+        const statistics = await Statistic.find().sort('date');
+
+        // Format the statistics
+        const formattedStatistics = statistics.map(stat => ({
+            date: stat.date.toISOString().split('T')[0], // Format date as YYYY-MM-DD
+            bottlesWeight: stat.bottlesWeight,
+            participants: stat.participants
+        }));
+
+        // Send the formatted statistics in the response
+        res.json(formattedStatistics);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Route to update global statistics
+router.post('/update-statistics', auth, async (req, res) => {
+    try {
+        const newStatistics = await calculateGlobalStatistics();
+        
+        // Fetch the latest statistics entry from the database
+        const latestStatistic = await Statistic.findOne().sort('-date');
+
+        // Check if there are any changes in the statistics
+        if (!latestStatistic ||
+            latestStatistic.bottlesWeight !== newStatistics.totalWeight ||
+            latestStatistic.participants !== newStatistics.totalUsers) {
+                
+            // Save new statistics
+            const newStatisticEntry = new Statistic({
+                date: new Date(),
+                bottlesWeight: newStatistics.totalWeight,
+                participants: newStatistics.totalUsers
+            });
+
+            await newStatisticEntry.save();
+
+            res.status(201).json({ message: 'Statistics updated successfully' });
+        } else {
+            res.status(200).json({ message: 'No changes in statistics' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Server error' });
     }
 });
 
