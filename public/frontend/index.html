@@ -8,6 +8,14 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.1/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <style>
+        *{
+            font-family: "Montserrat", sans-serif;
+            font-optical-sizing: auto;
+            font-style: normal;
+        }
+    </style>
 </head>
 <body class="bg-gray-100">
     <!-- Header -->
@@ -97,35 +105,44 @@
             </div>
         </section>
 
-        <section class="flex flex-col md:flex-row items-center justify-between space-x-4 bg-green-300 container mx-auto my-8 p-4 shadow-md rounded" data-aos="fade-up">
+        <section class="flex flex-col md:flex-row items-center justify-between space-x-4 bg-gray-200 container mx-auto my-8 p-4 shadow-md rounded" data-aos="fade-up">
             <div class="md:w-1/2">
                 <img src="images/img-2.jpg" alt="Bannière Image" class="w-full h-auto rounded">
             </div>
             <div class="md:w-1/2 p-4">
                 <h2 class="text-3xl font-bold text-green-600">Inscrivez-vous pour participer</h2>
-                <p class="mt-4 text-lg">Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque ipsam ut illo voluptas accusantium pariatur, praesentium mollitia autem dolor hic suscipit ducimus vel blanditiis possimus tempore ipsum dolore saepe exercitationem.</p>
+                <p class="mt-4 text-lg">Participez à l'assainissement de notre ville en vous inscrivant et gagner une recompense pour chaque kilo de bouteilles recoltées.</p>
+                <b class="mt-4 text-xl font-medium">Ensemble nous pouvons construire une ville meilleure</b> <br>
                 <a href="http://localhost/eco-responsable/public/frontend/pages/challenge.html"><button class="bg-green-500 text-white p-3 mt-4 uppercase rounded-sm shadow-md hover:bg-green-700">S'inscrire</button></a>
             </div>
         </section>
+
+        <div class="max-w-7xl mx-auto bg-white p-6 rounded-lg shadow-lg overflow-x-scroll mb-6">
+            <h3 class="text-2xl font-semibold mb-4">Top 10 des participants</h3>
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-green-500 text-white">
+                    <tr>
+                        <th class="border-b p-4">N°</th>
+                        <th class="border-b p-4">Pseudo utilisateur</th>
+                        <th class="border-b p-4">Commune</th>
+                        <th class="border-b p-4">Poids Bouteilles collectées (Kg)</th>
+                    </tr>
+                </thead>
+                <tbody id="top-users-table-body">
+                    <!-- Top users will be appended here -->
+                </tbody>
+            </table>
+        </div>
+        
     </main>
 
-    <div class="bg-cover bg-center h-64 my-5 rounded-t-xl overflow-hidden" style="background-image: url('images/img-3.jpg');" data-aos="fade-down">
+    <div class="bg-cover bg-center bg-fixed h-80 my-5 rounded-t-xl overflow-hidden" style="background-image: url('images/img-3.jpg');" data-aos="fade-down">
         <div class="flex items-center justify-center h-full bg-gray-900 bg-opacity-50">
             <h1 class="md:text-4xl text-2xl text-white font-bold">Découvrez le recyclage des dechets</h1>
         </div>
     </div>
 
-    <!-- Challenge Section -->
-    <section class="flex flex-col md:flex-row items-center justify-between container mx-auto my-8 p-4 shadow-md" data-aos="fade-up">
-        <div class="md:w-1/2">
-            <img src="images/img-2.jpg" alt="Bannière Image" class="w-full h-auto rounded">
-        </div>
-        <div class="md:w-1/2 p-4">
-            <h2 class="text-3xl font-bold text-green-600">Inscrivez-vous pour participer</h2>
-            <p class="mt-4 text-lg">Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque ipsam ut illo voluptas accusantium pariatur, praesentium mollitia autem dolor hic suscipit ducimus vel blanditiis possimus tempore ipsum dolore saepe exercitationem.</p>
-            <a href="http://localhost/eco-responsable/public/frontend/pages/login.html"><button class="bg-green-500 text-white p-3 mt-4 uppercase rounded-sm shadow-md hover:bg-green-700">S'inscrire</button></a>
-        </div>
-    </section>
+    
 
     <!-- Footer -->
     <footer class="bg-gradient-to-r from-green-500 to-green-800 text-white p-8" data-aos="fade-up">
@@ -171,8 +188,71 @@
         </div>
     </footer>
 
+    <div id="notification-container" class="fixed top-0 right-0 m-4"></div>
+
     <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                showNotification('You need to log in first.', 'error');
+                window.location.href = 'http://localhost/eco-responsable/public/frontend/pages/login.html';
+                return;
+            }
+    
+            const res = await fetch('http://localhost:3000/api/users', {
+                headers: {
+                    'x-auth-token': token
+                }
+            });
+    
+            if (res.status !== 200) {
+                showNotification('Failed to load users.', 'error');
+                window.location.href = 'http://localhost/eco-responsable/public/frontend/';
+                return;
+            }
+    
+            const users = await res.json();
+            const topUsersTableBody = document.getElementById('top-users-table-body');
+            topUsersTableBody.innerHTML = '';
+    
+    
+            // Render top 10 users
+            function renderTopUsers(users) {
+                // Sort users by BottlesCollectedWeight in descending order
+                const sortedUsers = users.sort((a, b) => b.BottlesCollectedWeight - a.BottlesCollectedWeight).slice(0, 10);
+                topUsersTableBody.innerHTML = '';
+                sortedUsers.forEach((user, index) => {
+                    if (!user.isAdmin) {
+                        const userRow = document.createElement('tr');
+                        userRow.innerHTML = `
+                            <td class="border-b p-4">${index + 1}</td>
+                            <td class="border-b p-4">${user.username}</td>
+                            <td class="border-b p-4">${user.commune}</td>
+                            <td class="border-b p-4 text-center">${user.BottlesCollectedWeight}Kg</td>
+                        `;
+                        topUsersTableBody.appendChild(userRow);
+                    }
+                });
+            }
+    
+            renderTopUsers(users);
+    
+    
+            // Function to show notification
+            function showNotification(message, type) {
+                const notificationContainer = document.getElementById('notification-container');
+                const notification = document.createElement('div');
+                notification.className = `p-4 mb-4 rounded-lg shadow-md ${type === 'error' ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`;
+                notification.textContent = message;
+                notificationContainer.appendChild(notification);
+    
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+            }
+        });
     </script>
+    
    
 <script src="index.js"></script>
 </body>

@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.1/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <style>
+        *{
+            font-family: "Montserrat", sans-serif;
+            font-optical-sizing: auto;
+            font-style: normal;
+        }
+    </style>
 </head>
 <body class="bg-gray-100">
     <!-- Header -->
@@ -65,10 +73,10 @@
 
     <!-- Dashboard Content -->
     <section class="container mx-auto px-6 py-20">
-        <h2 class="text-4xl font-bold text-center mb-8">Mon tableau de bord</h2>
+        <h2 class="text-4xl font-bold text-center mb-8 underline">Mon tableau de bord</h2>
         <div id="user-info" class="max-w-3xl mx-auto bg-green-50 p-6 rounded-lg shadow-lg">
             <h3 class="text-2xl font-semibold mb-4">Mes informations</h3>
-            <table class="min-w-full bg-white">
+            <table class="min-w-full bg-white text-center">
                 <thead class="bg-green-500 text-white">
                     <tr>
                         <th class="w-1/2 py-2 px-4">Nom</th>
@@ -76,42 +84,34 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="border-b">
-                        <td class="py-2 px-4 font-semibold">Pseudo</td>
-                        <td class="py-2 px-4" id="username"></td>
+                    <tr class="">
+                        <td class="py-2 px-4 border font-semibold">Pseudo</td>
+                        <td class="py-2 px-4 border" id="username"></td>
                     </tr>
-                    <tr class="border-b">
-                        <td class="py-2 px-4 font-semibold">Commune</td>
-                        <td class="py-2 px-4" id="commune"></td>
+                    <tr class="">
+                        <td class="py-2 px-4 border font-semibold">Commune</td>
+                        <td class="py-2 px-4 border" id="commune"></td>
                     </tr>
-                    <tr class="border-b">
-                        <td class="py-2 px-4 font-semibold">Poids bouteilles collectées</td>
-                        <td class="py-2 px-4" id="BottlesCollectedWeight"></td>
+                    <tr class="">
+                        <td class="py-2 px-4 border font-semibold">Poids bouteilles collectées</td>
+                        <td class="py-2 px-4 border" id="BottlesCollectedWeight"></td>
                     </tr>
-                    <tr class="border-b">
-                        <td class="py-2 px-4 font-semibold">Score</td>
-                        <td class="py-2 px-4" id="score"></td>
+                    <tr class="">
+                        <td class="py-2 px-4 border font-semibold">Gain courant</td>
+                        <td class="py-2 px-4 border" id="profit"></td>
                     </tr>
-                    <tr class="border-b">
-                        <td class="py-2 px-4 font-semibold">Gain courant</td>
-                        <td class="py-2 px-4" id="profit"></td>
+                    <tr class="">
+                        <td class="py-2 px-4 border font-semibold">Gain retiré</td>
+                        <td class="py-2 px-4 border" id="withdrawal"></td>
                     </tr>
-                    <tr class="border-b">
-                        <td class="py-2 px-4 font-semibold">Gain retiré</td>
-                        <td class="py-2 px-4" id="withdrawal"></td>
-                    </tr>
-                    <tr class="border-b">
-                        <td class="py-2 px-4 font-semibold">Gain cumulé</td>
-                        <td class="py-2 px-4" id="accumulation"></td>
+                    <tr class="">
+                        <td class="py-2 px-4 border font-semibold">Gain cumulé</td>
+                        <td class="py-2 px-4 border" id="accumulation"></td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-        <div id="statistics" class="max-w-3xl mx-auto my-4 bg-white p-6 rounded-lg shadow-lg">
-            <h3 class="text-2xl font-semibold mb-4">Statistiques</h3>
-            <canvas id="statsChart"></canvas>
-        </div>
         <div class="max-w-3xl mx-auto my-4 bg-white p-6 rounded-lg shadow-lg">
             <h3 class="text-2xl font-semibold mb-4">Statistiques</h3>
             <canvas id="profit-stat"></canvas>
@@ -189,46 +189,11 @@
             document.getElementById('username').textContent = user.username;
             document.getElementById('commune').textContent = user.commune;
             document.getElementById('BottlesCollectedWeight').textContent = user.BottlesCollectedWeight + "Kg";
-            document.getElementById('score').textContent = user.score;
             document.getElementById('profit').textContent = `${user.profit} CDF`;
             document.getElementById('withdrawal').textContent = `${user.withdrawal} CDF`;
             document.getElementById('accumulation').textContent = `${user.accumulation} CDF`;
 
             // Initialisation Chart.js
-        const ctx = document.getElementById('statsChart').getContext('2d');
-        const chart = new Chart(ctx, {
-            type: 'bar', // Type de graphique
-            data: {
-                labels: ['Bouteilles Collectées', 'Score'],
-                datasets: [{
-                    label: 'Statistiques',
-                    data: [user.BottlesCollectedWeight, user.score],
-                    backgroundColor: [
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)'
-                    ],
-                    borderColor: [
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-
         const ctxProfit = document.getElementById('profit-stat').getContext('2d');
         const chartProfit = new Chart(ctxProfit, {
             type: 'bar', // Type de graphique

@@ -16,7 +16,7 @@ async function calculateGlobalStatistics() {
 }
 
 // Route to get global statistics
-router.get('/global', async (req, res) => {
+router.get('/global', auth, async (req, res) => {
     try {
         const statistics = await calculateGlobalStatistics();
         res.json(statistics);

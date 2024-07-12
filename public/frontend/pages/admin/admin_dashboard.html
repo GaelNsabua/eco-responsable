@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.1/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <style>
+        *{
+            font-family: "Montserrat", sans-serif;
+            font-optical-sizing: auto;
+            font-style: normal;
+        }
+    </style>
 </head>
 <body class="bg-gray-100">
     <!-- Navbar -->
@@ -28,13 +38,17 @@
     <!-- Notification container -->
     <div id="notification-container" class="fixed top-4 right-4 z-50 space-y-4"></div>
 
-    <!-- Dashboard Content -->
-    <section class="container mx-auto px-6 py-12">
-        <h2 class="text-4xl font-bold text-center mb-8">Admin Dashboard</h2>
-        <div id="users-list" class="max-w-7xl mx-auto bg-white p-6 rounded-lg shadow-lg overflow-x-scroll">
-            <h3 class="text-2xl font-semibold mb-4">Users List</h3>
+    <div class="h-screen w-full">
+        <div class="flex w-full justify-end items-center md:px-14 md:mt-5 space-x-4">
+            <span>Rechercher</span>         
+            <input type="text" id="search-input" class="mb-4 p-2 border rounded w-1/3 outline-none hover:border-green-300" placeholder="Search by username or commune">
+        </div>
+        
+        <!-- Dashboard Content -->
+        <div class="max-w-7xl mx-auto bg-white p-6 rounded-lg shadow-lg overflow-x-scroll h-5/6 my-5">
+            <h3 class="text-2xl font-semibold mb-4">Liste des participants</h3>
             <table class="w-full text-left border-collapse">
-                <thead class="bg-green-500 text-white">
+                <thead class="bg-green-500 text-white font-medium">
                     <tr>
                         <th class="border-b p-4">Nom utilisateur</th>
                         <th class="border-b p-4">Commune</th>
@@ -45,11 +59,12 @@
                         <th class="border-b p-4">Actions</th>
                     </tr>
                 </thead>
-                <tbody id="users-table-body">
+                <tbody id="users-table-body" class="overflow-y-scroll">
                     <!-- Users will be appended here -->
                 </tbody>
             </table>
         </div>
+    </div>
 
          <!-- Edit Form Modal -->
         <div id="edit-form-modal" class="fixed z-10 inset-0 overflow-y-auto hidden">
@@ -67,7 +82,7 @@
                             <input type="hidden" id="edit-user-id">
                             <div class="mb-4">
                                 <label for="edit-bottles-collected-weight" class="block text-sm font-medium text-gray-700">Poids Bouteilles collectées</label>
-                                <input type="number" id="edit-bottles-collected-weight" class="mt-1 block w-full py-4 shadow-sm sm:text-sm text-center border-2 border-green-300 rounded-md outline-none" min="0" required>
+                                <input type="number" id="edit-bottles-collected-weight" class="mt-1 block w-full py-4 shadow-sm sm:text-sm text-center border-2 border-green-300 rounded-md outline-none" min="0" step="0.2" required>
                             </div>
                             <div class="mb-4">
                                 <label for="edit-user-withdrawal" class="block text-sm font-medium text-gray-700">Gain retiré</label>
@@ -88,114 +103,7 @@
     <footer class="bg-gray-800 text-white text-center w-full py-6">
         <p>&copy; 2024 Eco-Responsable. All rights reserved.</p>
     </footer>
-
+    <script src="./js/admin.js"></script>
     
-
-    <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                showNotification('You need to log in first.', 'error');
-                window.location.href = 'login.html';
-                return;
-            }
-
-            const res = await fetch('http://localhost:3000/api/users', {
-                headers: {
-                    'x-auth-token': token
-                }
-            });
-
-            if (res.status !== 200) {
-                showNotification('Failed to load users.', 'error');
-                window.location.href = 'http://localhost/eco-responsable/public/frontend/';
-                return;
-            }
-
-            const users = await res.json();
-            const usersTableBody = document.getElementById('users-table-body');
-            usersTableBody.innerHTML = '';
-
-            users.forEach(user => {
-                if (!user.isAdmin) {
-                    const userRow = document.createElement('tr');
-                    userRow.innerHTML = `
-                        <td class="border-b p-4">${user.username}</td>
-                        <td class="border-b p-4">${user.commune}</td>
-                        <td class="border-b p-4">${user.BottlesCollectedWeight}Kg</td>
-                        <td class="border-b p-4">${user.profit}</td>
-                        <td class="border-b p-4">${user.withdrawal}</td>
-                        <td class="border-b p-4">${user.accumulation}</td>
-                        <td class="border-b p-4">
-                            <button data-user-id="${user._id}" class="bg-blue-500 text-white px-4 py-2 rounded-md edit-btn">Edit</button>
-                        </td>
-                    `;
-                    usersTableBody.appendChild(userRow);
-                }
-            });
-
-            // Handle edit button click
-            document.querySelectorAll('.edit-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const userId = e.target.getAttribute('data-user-id');
-                    document.getElementById('edit-user-id').value = userId;
-                    document.getElementById('edit-form-modal').classList.remove('hidden');
-                });
-            });
-
-            // Handle form submission
-            document.getElementById('edit-form').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const userId = document.getElementById('edit-user-id').value;
-                const BottlesCollectedWeight = document.getElementById('edit-bottles-collected-weight').value;
-                const userWithdrawal = document.getElementById('edit-user-withdrawal').value;
-
-                if (BottlesCollectedWeight !== null && userWithdrawal !== null) {
-                    const res = await fetch('http://localhost:3000/api/users/update-score', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'x-auth-token': token
-                        },
-                        body: JSON.stringify({ userId, BottlesCollectedWeight: parseInt(BottlesCollectedWeight), userWithdrawal: parseInt(userWithdrawal) })
-                    });
-
-                    if (res.status === 200) {
-                        showNotification('Score updated successfully', 'success');
-                        setTimeout(() => {
-                            location.reload();
-                        }, 3000);
-                    } else {
-                        const data = await res.json();
-                        showNotification('Error: ' + data.error, 'error');
-                    }
-                }
-            });
-
-            // Handle cancel button click
-            document.getElementById('cancel-edit-btn').addEventListener('click', () => {
-                document.getElementById('edit-form-modal').classList.add('hidden');
-            });
-
-            // Handle logout button click
-            document.getElementById('logout-btn').addEventListener('click', () => {
-                localStorage.removeItem('token');
-                window.location.href = 'index.html';
-            });
-
-            // Function to show notification
-            function showNotification(message, type) {
-                const notificationContainer = document.getElementById('notification-container');
-                const notification = document.createElement('div');
-                notification.className = `p-4 mb-4 rounded-lg shadow-md ${type === 'error' ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`;
-                notification.textContent = message;
-                notificationContainer.appendChild(notification);
-
-                setTimeout(() => {
-                    notification.remove();
-                }, 3000);
-            }
-        });
-    </script>
 </body>
 </html>

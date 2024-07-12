@@ -114,7 +114,7 @@ router.post('/update-score', auth, auth.isAdmin, async (req, res) => {
 
         user.BottlesCollectedWeight = user.BottlesCollectedWeight+BottlesCollectedWeight; //On update le poids des bouteilles collectés en additionnant
         user.score = ((user.BottlesCollectedWeight)/1000) 
-        user.profit = user.profit + ((BottlesCollectedWeight*5000)/2.5); // Calcul du gain en considerant que 2.5Kg de bouteilles equivalent à 5000fc et on update le profit en additionnant
+        user.profit = user.profit + ((BottlesCollectedWeight*4000)/2.5); // Calcul du gain en considerant que 2.5Kg de bouteilles equivalent à 4000fc et on update le profit en additionnant
         user.profit = (user.profit - userWithdrawal); //On soustrait le retrait dans le profit afin de trouver le gain courant
         //Le gain courant ne peut pas être inferieur à 500 après calcul
         if (user.profit < 500) {
